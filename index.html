@@ -1,341 +1,1176 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-
-<link rel="icon" type="image/svg+xml" href="https://tytus44.github.io/cerbero/favicon.svg" />
-<link rel="shortcut icon" href="https://tytus44.github.io/cerbero/favicon.ico" />
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <script>
-        (function() {
-            try {
-                const theme = localStorage.getItem('cerbero_theme') || 'light';
-                if (theme === 'dark') {
-                    document.documentElement.classList.add('dark-theme');
-                }
-            } catch (e) {
-                console.error('Errore applicazione tema iniziale:', e);
-            }
-        })();
-    </script>
-
-    <title>CeRBERO - Pagina iniziale</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="css/stile.css"> 
+    <title>MyStation - Dashboard Moderna</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="stile.css">
     <style>
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Massimo 3 box per riga */
-            gap: 20px;
-        }
-
-        #confirm-modal .modal-content p {
-            text-align: left;
-        }
-
-        /* Correzioni tema scuro */
-        html.dark-theme .corrispettivi-input,
-        html.dark-theme .uniform-field {
-            color: var(--text-primary) !important;
-            background: var(--bg-white) !important;
-            border-color: var(--border-color) !important;
-        }
-
-        html.dark-theme .corrispettivi-input::placeholder,
-        html.dark-theme .uniform-field::placeholder {
-            color: var(--text-secondary) !important;
-        }
-
-        /* Modale info */
-        .modal-info-content {
-            text-align: center;
-            padding: 30px;
-        }
-
-        .modal-info-icon {
-            font-size: 72px !important;
-            color: var(--primary-blue);
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .info-modal-brand {
-            font-size: 48px !important;
-            font-weight: 800;
-            color: var(--primary-blue);
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: -0.025em;
-        }
-
-        .info-divider {
-            height: 1px;
-            background-color: var(--border-color);
-            margin: 20px 0;
-            width: 100%;
-        }
-
-        .info-modal-content p {
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--text-primary);
-            text-align: left !important;
-        }
-
-        /* Pulsanti eliminazione task */
-        .todo-delete {
-            width: 24px;
-            height: 24px;
-            background: transparent;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            color: var(--text-secondary);
-            font-size: 16px;
+        /* Extra styles for Carico section */
+        .carico-header-controls {
             display: flex;
             align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
             justify-content: center;
-            transition: all 0.3s ease;
         }
-
-        .todo-delete:hover {
-            background-color: var(--danger);
-            color: white;
-            border-color: var(--danger);
+        .carico-filters-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
         }
-
-        /* Correzioni campi editabili */
-        .corrispettivi-input,
-        .uniform-field {
-            width: 100%;
-            padding: 8px 12px;
+        .carico-actions-group {
+            display: flex;
+            gap: 0.375rem;
+            flex-wrap: wrap;
+        }
+        .carico-table-container {
+            overflow-x: auto;
+            border-radius: var(--radius-lg);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            font-family: inherit;
-            font-size: var(--font-size-sm);
-            background: var(--bg-white);
-            color: var(--text-primary);
-            box-sizing: border-box;
         }
-
-        .corrispettivi-input:focus,
-        .uniform-field:focus {
-            border-color: var(--primary-blue);
-            outline: none;
+        .carico-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface);
+            table-layout: fixed;
         }
-
-        /* ✅ AGGIUNTA: Stile per campo turno centrato */
-        .turno-display {
-            text-align: center !important;
+        .carico-table thead {
+            background: var(--bg-tertiary);
+        }
+        .carico-table th,
+        .carico-table td {
+            padding: 0.75rem 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .carico-table th {
             font-weight: 600;
-            font-size: 16px;
-            color: var(--primary-blue);
+            color: var(--text-primary);
         }
+        .carico-table .driver-name {
+            text-align: left;
+        }
+        .diff-positive { color: var(--success-color); font-weight: 600; }
+        .diff-negative { color: var(--error-color); font-weight: 600; }
+        .diff-zero { color: var(--text-muted); }
+
+        /* ===== CREDITI CLIENTI ===== */
+        #crediti-content { padding: 2rem; }
+        .credito-card {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: box-shadow 0.3s;
+        }
+        .credito-card:hover { box-shadow: var(--shadow); }
+        .credito-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .credito-nome { font-weight: 600; font-size: 1.125rem; }
+        .credito-tel { font-size: 0.875rem; color: var(--text-muted); }
+        .credito-totale { font-weight: 700; font-size: 1.25rem; }
+        .credito-totale.alert { color: var(--error-color); }
+        .transazione {
+            display: grid;
+            grid-template-columns: 80px 1fr 100px;
+            gap: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .transazione:last-child { border-bottom: none; }
+        .transazione span:last-child { text-align: right; }
+        .debito { color: var(--error-color); font-weight: 600; }
+        .credito { color: var(--success-color); font-weight: 600; }
+        .credito-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        .btn-sm { padding: 0.5rem 0.75rem; font-size: 0.75rem; }
     </style>
 </head>
-<body>
+<body data-theme="dark">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo-section">
+                <div class="logo-container">
+                    <div class="logo-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div class="logo-text">
+                        <div class="logo-title">MyStation</div>
+                    </div>
+                </div>
+            </div>
 
-    <div class="top-action-bar">
-        <button class="action-btn" onclick="importaDatiCompleti()"><i class="fa-solid fa-download"></i>IMPORTA</button>
-        <button class="action-btn" onclick="esportaTuttiIDati()"><i class="fa-solid fa-upload"></i>ESPORTA</button>
-        <button class="action-btn btn-success" onclick="confirmNewDay()"><i class="fa-solid fa-power-off"></i>NUOVA GIORNATA</button>
-    </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-link active" data-page="home">
+                    <div class="nav-icon"><i class="fas fa-home"></i></div>
+                    <span class="nav-text">Home</span>
+                </a>
+                <a href="#" class="nav-link" data-page="rubrica">
+                    <div class="nav-icon"><i class="fas fa-address-book"></i></div>
+                    <span class="nav-text">Anagrafica</span>
+                </a>
+                <a href="#" class="nav-link" data-page="carico">
+                    <div class="nav-icon"><i class="fas fa-truck-moving"></i></div>
+                    <span class="nav-text">Registro di Carico</span>
+                </a>
+                <a href="#" class="nav-link" data-page="calendario">
+                    <div class="nav-icon"><i class="fas fa-calendar"></i></div>
+                    <span class="nav-text">Virtual Station</span>
+                </a>
+                <a href="#" class="nav-link" data-page="note">
+                    <div class="nav-icon"><i class="fas fa-sticky-note"></i></div>
+                    <span class="nav-text">Amministrazione</span>
+                </a>
+                <a href="#" class="nav-link" data-page="crediti">
+                    <div class="nav-icon"><i class="fas fa-credit-card"></i></div>
+                    <span class="nav-text">Crediti Clienti</span>
+                </a>
+                <a href="#" class="nav-link" data-page="impostazioni">
+                    <div class="nav-icon"><i class="fas fa-cog"></i></div>
+                    <span class="nav-text">Report Vendite</span>
+                </a>
+                <a href="#" class="nav-link" data-page="strumenti">
+                    <div class="nav-icon"><i class="fas fa-tools"></i></div>
+                    <span class="nav-text">Strumenti</span>
+                </a>
+            </nav>
 
-    <aside class="sidebar" id="main-sidebar">
-        <div class="sidebar-header">CeRBERO</div>
-<nav class="nav">
-    <ul>
-        <li><a href="index.html" class="active"><i class="fa-solid fa-house"></i>HOME</a></li>
-        <li><a href="pagine/rubrica.html"><i class="fa-solid fa-address-book"></i>RUBRICA</a></li>
-        <li><a href="pagine/monetario.html"><i class="fa-solid fa-coins"></i>MONETARIO</a></li>
-        <li><a href="pagine/virtualstation.html"><i class="fa-solid fa-gas-pump"></i>VIRTUALSTATION</a></li>
-        <li><a href="pagine/vendite.html"><i class="fa-solid fa-chart-line"></i>VENDITE</a></li>
-        <li><a href="pagine/credito.html"><i class="fa-solid fa-credit-card"></i>CREDITO</a></li>
-        <li><a href="pagine/carico.html"><i class="fa-solid fa-truck"></i>CARICO</a></li>
-    </ul>
-</nav>
-        
-        <div class="sidebar-footer">
-            <a href="#" id="theme-switcher" title="Cambia Tema">
-            <i class="fa-solid fa-sun theme-icon-light" id="theme-icon-light"></i>
-            <i class="fa-solid fa-moon theme-icon-dark" id="theme-icon-dark"></i>TEMA
-            </a>
-            <a href="#" id="info-btn" title="Informazioni">
-                <i class="fa-solid fa-circle-info"></i>INFO
-            </a>
-        </div>
-    </aside>
+            <div class="sidebar-footer">
+                <div class="sidebar-actions">
+                    <button class="sidebar-btn" id="import-btn" title="Importa">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="sidebar-btn" id="export-btn" title="Esporta">
+                        <i class="fas fa-upload"></i>
+                    </button>
+                    <button class="sidebar-btn" id="new-day-btn" title="Nuova Giornata">
+                        <i class="fa-solid fa-calendar-day"></i>
+                    </button>
+                    <button class="sidebar-btn" id="themeToggle" title="Cambia Tema">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
 
-<div class="container">
-  <main class="main-content">
-            <div class="dashboard-grid">
-                <!-- Giorata -->
-                <section class="box summary-box giornata-box">
-                    <div class="box-header">GIORNATA</div>
-                    <div class="box-content">
-                        <div class="giornata-content">
-                            <div class="time-date">
-                                <div id="currentTime"></div>
-                                <div id="currentDateDisplay"></div>
+        <main class="main-content">
+            <header class="header">
+                <div class="header-actions">
+                    <!-- Controlli Header Rubrica -->
+                    <div class="rubrica-header-controls hidden" id="rubrica-header-controls">
+                        <div class="filter-search">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="client-search" placeholder="Cerca..." class="search-input">
+                            <button class="search-clear" id="search-clear" style="display: none;">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <button class="btn-icon" id="add-client-btn" title="Nuovo Contatto">
+                            <i class="fas fa-user-plus"></i>
+                        </button>
+                        <button class="btn-icon btn-secondary" id="import-clients-btn">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                        </button>
+                        <button class="btn-icon btn-secondary" id="export-clients-btn">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                        <button class="btn-icon btn-danger" id="clear-all-btn">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+
+                    <!-- Controlli Header Carico -->
+                    <div class="carico-header-controls hidden" id="carico-header-controls">
+                        <div class="carico-filters-group">
+                            <select id="carico-period-filter" class="filter-select">
+                                <option value="anno" selected>Anno corrente</option>
+                                <option value="semestre">Semestre</option>
+                                <option value="trimestre">Trimestre</option>
+                                <option value="mese">Mese</option>
+                            </select>
+                            <select id="carico-detail-filter" class="filter-select"></select>
+                            <button id="carico-apply-filter" class="btn-icon btn-secondary" title="Applica Filtri">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                            <button id="carico-reset-filter" class="btn-icon btn-secondary" title="Reset Filtri">
+                                <i class="fas fa-undo"></i>
+                            </button>
+                        </div>
+                        <div class="carico-actions-group">
+                            <button id="add-carico-btn" class="btn-icon" title="Nuovo Carico">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button id="import-carico-btn" class="btn-icon btn-secondary" title="Importa JSON">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button id="export-carico-btn" class="btn-icon btn-secondary" title="Esporta JSON">
+                                <i class="fas fa-upload"></i>
+                            </button>
+                            <button class="btn-icon btn-secondary" id="edit-carico-btn" title="Modifica Carico">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button id="reset-year-btn" class="btn-icon btn-danger" title="Reset Anno">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Controlli Header Amministrazione -->
+                    <div class="amministrazione-header-controls hidden" id="note-header-controls">
+                        <div class="amministrazione-search-group">
+                            <div class="filter-search">
+                                <i class="fas fa-search search-icon"></i>
+                                <input type="text" id="amministrazione-search" placeholder="Cerca operazione..." class="search-input">
+                                <button class="search-clear" id="amministrazione-search-clear" style="display: none;">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </div>
-                            <div class="form-fields">
-                                 <div class="form-group">
-                                    <label for="controlTurno">TURNO</label>
-                                    <!-- ✅ MODIFICATO: Campo turno ora è display-field con classe turno-display per centratura -->
-                                    <input type="text" class="display-field turno-display" id="controlTurno" readonly tabindex="-1">
+                            <select id="amministrazione-filter" class="filter-select">
+                                <option value="tutti">Tutti i tipi</option>
+                                <option value="entrata">Entrate</option>
+                                <option value="uscita">Uscite</option>
+                                <option value="in-sospeso">In sospeso</option>
+                            </select>
+                        </div>
+                        <div class="amministrazione-actions-group">
+                            <button id="add-amministrazione-btn" class="btn-icon" title="Aggiungi Operazione">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button id="import-amministrazione-btn" class="btn-icon btn-secondary" title="Importa">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button id="export-amministrazione-btn" class="btn-icon btn-secondary" title="Esporta">
+                                <i class="fas fa-upload"></i>
+                            </button>
+                            <button id="print-amministrazione-btn" class="btn-icon btn-secondary" title="Stampa">
+                                <i class="fas fa-print"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Controlli Header Crediti -->
+                    <div class="crediti-header-controls hidden" id="crediti-header-controls">
+                        <div class="crediti-actions">
+                            <button id="add-credito-cliente" class="btn-icon" title="Nuovo Cliente">
+                                <i class="fas fa-user-plus"></i>
+                            </button>
+                            <button id="add-transazione" class="btn-icon btn-secondary" title="Nuova Transazione">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button id="import-crediti" class="btn-icon btn-secondary" title="Importa">
+                                <i class="fas fa-download"></i>
+                            </button>
+                            <button id="export-crediti" class="btn-icon btn-secondary" title="Esporta">
+                                <i class="fas fa-upload"></i>
+                            </button>
+                            <button id="print-estratto" class="btn-icon" title="Stampa Estratti">
+                                <i class="fas fa-print"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="dashboard" id="content-area">
+                <!-- Home Content -->
+                <div class="page-content" id="home-content">
+                    <div class="stats-grid">
+                        <div class="stat-card primary">
+                            <div class="stat-header">
+                                <div>
+                                    <div class="stat-title">Contatti Totali</div>
+                                    <div class="stat-value" id="total-contacts">0</div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="controlDate">DATA</label>
-                                    <input type="text" class="display-field" id="controlDate" readonly tabindex="-1">
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
                                 </div>
+                            </div>
+                            <div class="stat-footer">
+                                <span class="stat-trend positive">+5%</span>
+                                <span class="stat-description">vs mese scorso</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card secondary">
+                            <div class="stat-header">
+                                <div>
+                                    <div class="stat-title">Carichi Caricati</div>
+                                    <div class="stat-value">24</div>
+                                </div>
+                                <div class="stat-icon">
+                                    <i class="fas fa-truck"></i>
+                                </div>
+                            </div>
+                            <div class="stat-footer">
+                                <span class="stat-trend positive">+12%</span>
+                                <span class="stat-description">questo mese</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card accent">
+                            <div class="stat-header">
+                                <div>
+                                    <div class="stat-title">Eventi Oggi</div>
+                                    <div class="stat-value">3</div>
+                                </div>
+                                <div class="stat-icon">
+                                    <i class="fas fa-calendar-day"></i>
+                                </div>
+                            </div>
+                            <div class="stat-footer">
+                                <span class="stat-trend neutral">2 completati</span>
+                                <span class="stat-description">1 in sospeso</span>
+                            </div>
+                        </div>
+
+                        <div class="stat-card success">
+                            <div class="stat-header">
+                                <div>
+                                    <div class="stat-title">Note Attive</div>
+                                    <div class="stat-value">7</div>
+                                </div>
+                                <div class="stat-icon">
+                                    <i class="fas fa-sticky-note"></i>
+                                </div>
+                            </div>
+                            <div class="stat-footer">
+                                <span class="stat-trend positive">2 aggiunte</span>
+                                <span class="stat-description">questa settimana</span>
                             </div>
                         </div>
                     </div>
-                </section>
 
-                <!-- Incasso -->
-                <section class="box summary-box box-libero-1">
-                    <div class="box-header">INCASSO</div>
-                    <div class="box-content corrispettivi-content">
-                        <div class="corrispettivi-group">
-                            <span class="corrispettivi-label">FATTURATO TOTALE</span>
-                            <input type="text" class="corrispettivi-input" id="corrispettivi-fatturato" placeholder="€ 0,00" inputmode="decimal" style="text-align: center;">
+                    <div class="quick-actions">
+                        <div class="action-card">
+                            <div class="action-header">
+                                <div class="action-icon"><i class="fas fa-user-plus"></i></div>
+                                <h3 class="action-title">Nuovo Contatto</h3>
+                            </div>
+                            <p class="action-description">Aggiungi rapidamente un nuovo cliente o fornitore alla rubrica</p>
                         </div>
-                        <div class="corrispettivi-group">
-                            <span class="corrispettivi-label">IMPONIBILE</span>
-                            <input type="text" class="display-field" id="corrispettivi-imponibile" placeholder="€ 0,00" readonly>
+                        <div class="action-card">
+                            <div class="action-header">
+                                <div class="action-icon"><i class="fas fa-truck-loading"></i></div>
+                                <h3 class="action-title">Registra Carico</h3>
+                            </div>
+                            <p class="action-description">Inserisci un nuovo carico di carburante ricevuto oggi</p>
                         </div>
-                        <div class="corrispettivi-group">
-                            <span class="corrispettivi-label">IVA (22%)</span>
-                            <input type="text" class="display-field" id="corrispettivi-iva" placeholder="€ 0,00" readonly>
+                        <div class="action-card">
+                            <div class="action-header">
+                                <div class="action-icon"><i class="fas fa-sticky-note"></i></div>
+                                <h3 class="action-title">Nuova Nota</h3>
+                            </div>
+                            <p class="action-description">Aggiungi promemoria, annotazioni e note importanti</p>
                         </div>
-                        <div class="corrispettivi-group">
-                            <span class="corrispettivi-label">MARGINE</span>
-                            <input type="text" class="display-field" id="corrispettivi-margine" placeholder="€ 0,00" readonly>
+                        <div class="action-card">
+                            <div class="action-header">
+                                <div class="action-icon"><i class="fas fa-calendar"></i></div>
+                                <h3 class="action-title">Calendario Eventi</h3>
+                            </div>
+                            <p class="action-description">Visualizza e gestisci appuntamenti e manutenzioni</p>
+                        </div>
+                        <div class="action-card">
+                            <div class="action-header">
+                                <div class="action-icon"><i class="fas fa-tasks"></i></div>
+                                <h3 class="action-title">Lista Attività</h3>
+                            </div>
+                            <p class="action-description">Organizza e monitora le attività quotidiane</p>
+                        </div>
+                        <div class="action-card">
+                            <div class="action-header">
+                                <div class="action-icon"><i class="fas fa-chart-line"></i></div>
+                                <h3 class="action-title">Analisi Vendite</h3>
+                            </div>
+                            <p class="action-description">Visualizza trend e report dettagliati delle performance</p>
                         </div>
                     </div>
-                </section>
+                </div>
 
-                <!-- Riepilogo vendite -->
-                <section class="box summary-box vendite-summary-box">
-                    <div class="box-header">RIEPILOGO VENDITE</div>
-                    <div class="box-content">
-                        <div class="vendite-summary-grid">
-                            <div class="display-field">BENZINA</div>
-                            <input type="text" class="display-field" id="benzina-liters" placeholder="0,00 L" readonly>
-                            
-                            <div class="display-field">GASOLIO</div>
-                            <input type="text" class="display-field" id="gasolio-liters" placeholder="0,00 L" readonly>
-                            
-                            <div class="display-field">DIESEL+</div>
-                            <input type="text" class="display-field" id="diesel-liters" placeholder="0,00 L" readonly>
-                            
-                            <div class="display-field">HVOLUTION</div>
-                            <input type="text" class="display-field" id="hvolution-liters" placeholder="0,00 L" readonly>
-                            
-                            <div class="display-field">ADBLUE</div>
-                            <input type="text" class="display-field" id="adblue-liters" placeholder="0,00 L" readonly>
+                <!-- Rubrica Content -->
+                <div class="page-content hidden" id="rubrica-content">
+                    <div class="clients-grid" id="clients-grid"></div>
+                </div>
+
+                <!-- Carico Content -->
+                <div class="page-content hidden" id="carico-content">
+                    <div class="edit-mode-banner" id="edit-mode-banner">
+                        <i class="fas fa-edit"></i>
+                        Modalità Modifica Attiva - Clicca su qualsiasi cella per modificare data, autista o valori numerici
+                    </div>
+
+                    <!-- Tabella Riepilogo -->
+                    <div class="summary-section">
+                        <h2 class="summary-title" id="summary-year-title">TOTALE ANNO (2025)</h2>
+                        <div class="summary-table-container">
+                            <table class="summary-table" id="summary-table">
+                                <thead>
+                                    <tr>
+                                        <th>PRODOTTO</th>
+                                        <th>LITRI</th>
+                                        <th>PIÙ</th>
+                                        <th>MENO</th>
+                                        <th>DIFFERENZA</th>
+                                        <th id="prev-year-header">(2024)</th>
+                                        <th>TOTALE</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="product-cell">
+                                            <i class="fas fa-tint product-icon benzina" style="color: #10b981;"></i>
+                                            BENZINA
+                                        </td>
+                                        <td class="number-cell" id="summary-benzina-litri">0</td>
+                                        <td class="positive-cell" id="summary-benzina-piu">0</td>
+                                        <td class="negative-cell" id="summary-benzina-meno">0</td>
+                                        <td class="diff-cell" id="summary-benzina-diff">0</td>
+                                        <td>
+                                            <input type="number" class="prev-year-input" id="summary-benzina-prev" value="0" min="0">
+                                        </td>
+                                        <td class="total-cell number-cell" id="summary-benzina-total">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="product-cell">
+                                            <i class="fas fa-tint product-icon gasolio" style="color: #f59e0b;"></i>
+                                            GASOLIO
+                                        </td>
+                                        <td class="number-cell" id="summary-gasolio-litri">0</td>
+                                        <td class="positive-cell" id="summary-gasolio-piu">0</td>
+                                        <td class="negative-cell" id="summary-gasolio-meno">0</td>
+                                        <td class="diff-cell" id="summary-gasolio-diff">0</td>
+                                        <td>
+                                            <input type="number" class="prev-year-input" id="summary-gasolio-prev" value="0" min="0">
+                                        </td>
+                                        <td class="total-cell number-cell" id="summary-gasolio-total">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="product-cell">
+                                            <i class="fas fa-tint product-icon diesel" style="color: #f97316;"></i>
+                                            DIESEL+
+                                        </td>
+                                        <td class="number-cell" id="summary-diesel-litri">0</td>
+                                        <td class="positive-cell" id="summary-diesel-piu">0</td>
+                                        <td class="negative-cell" id="summary-diesel-meno">0</td>
+                                        <td class="diff-cell" id="summary-diesel-diff">0</td>
+                                        <td>
+                                            <input type="number" class="prev-year-input" id="summary-diesel-prev" value="0" min="0">
+                                        </td>
+                                        <td class="total-cell number-cell" id="summary-diesel-total">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="product-cell">
+                                            <i class="fas fa-tint product-icon hvolution" style="color: #0ea5e9;"></i>
+                                            HVOLUTION
+                                        </td>
+                                        <td class="number-cell" id="summary-hvolution-litri">0</td>
+                                        <td class="positive-cell" id="summary-hvolution-piu">0</td>
+                                        <td class="negative-cell" id="summary-hvolution-meno">0</td>
+                                        <td class="diff-cell" id="summary-hvolution-diff">0</td>
+                                        <td>
+                                            <input type="number" class="prev-year-input" id="summary-hvolution-prev" value="0" min="0">
+                                        </td>
+                                        <td class="total-cell number-cell" id="summary-hvolution-total">0</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="product-cell">
+                                            <i class="fas fa-calculator product-icon totali" style="color: var(--primary-color);"></i>
+                                            TOTALI
+                                        </td>
+                                        <td class="number-cell" id="summary-total-litri">0</td>
+                                        <td class="positive-cell" id="summary-total-piu">0</td>
+                                        <td class="negative-cell" id="summary-total-meno">0</td>
+                                        <td class="diff-cell" id="summary-total-diff">0</td>
+                                        <td class="number-cell" id="summary-total-prev">0</td>
+                                        <td class="total-cell number-cell" id="summary-total-final">0</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Statistiche Carico -->
+                    <div class="stats-grid carico-stats">
+                        <div class="carico-stats-box benzina">
+                            <div class="stats-icon">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <div class="stats-content">
+                                <p class="stats-label">Benzina</p>
+                                <h3 id="carico-benzina-stat">0 L</h3>
+                            </div>
+                        </div>
+
+                        <div class="carico-stats-box gasolio">
+                            <div class="stats-icon">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <div class="stats-content">
+                                <p class="stats-label">Gasolio</p>
+                                <h3 id="carico-gasolio-stat">0 L</h3>
+                            </div>
                         </div>
                         
-                        <div class="vendite-totals">
-                            <input type="text" class="display-field product-field" value="TOTALE LITRI" readonly>
-                            <input type="text" class="display-field" id="total-liters" placeholder="0,00 L" readonly>
+                        <div class="total-stats-box">
+                            <div class="stats-sub-box total-products">
+                                <div class="stats-icon">
+                                    <i class="fas fa-gas-pump"></i>
+                                </div>
+                                <div class="stats-content">
+                                    <p class="stats-label">Totale Prodotti</p>
+                                    <h3 id="carico-total-stat">0 L</h3>
+                                </div>
+                            </div>
+                            <div class="stats-sub-box top-driver">
+                                <div class="stats-icon">
+                                    <i class="fas fa-user-alt"></i>
+                                </div>
+                                <div class="stats-content">
+                                    <p class="stats-label">Autista Top</p>
+                                    <h4 id="carico-top-autista">N/D</h4>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </section>
-                
-                <!-- Note -->
-                <section class="box summary-box note-box" id="notes-card">
-                    <div class="box-header">NOTE</div>
-                    <div class="box-content">
-                        <textarea id="notesArea" placeholder="Scrivi le tue note qui..." class="uniform-field"></textarea>
-                    </div>
-                </section>
 
-                <!-- Calendario -->
-                <section class="box summary-box calendario-box" id="calendar-card">
-                    <div class="box-header">CALENDARIO</div>
-                    <div class="box-content">
-                        <div class="calendar-header">
-                            <button id="calendarPrev"><i class="fa-solid fa-chevron-left"></i></button>
-                            <h4 id="calendarTitle"></h4>
-                            <button id="calendarNext"><i class="fa-solid fa-chevron-right"></i></button>
+                        <div class="carico-stats-box diesel">
+                            <div class="stats-icon">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <div class="stats-content">
+                                <p class="stats-label">Diesel+</p>
+                                <h3 id="carico-diesel-stat">0 L</h3>
+                            </div>
                         </div>
-                        <div class="calendar-grid">
-                            <div class="weekday">LU</div><div class="weekday">MA</div><div class="weekday">ME</div><div class="weekday">GI</div><div class="weekday">VE</div><div class="weekday">SA</div><div class="weekday">DO</div>
+                        
+                        <div class="carico-stats-box hvolution">
+                            <div class="stats-icon">
+                                <i class="fas fa-tint"></i>
+                            </div>
+                            <div class="stats-content">
+                                <p class="stats-label">Hvolution</p>
+                                <h3 id="carico-hvolution-stat">0 L</h3>
+                            </div>
                         </div>
-                        <div class="calendar-grid" id="calendarDates"></div>
                     </div>
-                </section>
-                
-                <!-- To-do list -->
-                <section class="box summary-box todo-box" id="todo-card">
-                    <div class="box-header">TO-DO LIST</div>
-                    <div class="box-content">
-                        <div class="todo-input-group">
-                            <input type="text" id="newTodoInput" placeholder="Aggiungi task del turno..." class="uniform-field">
-                            <button id="addTodoBtn" class="action-btn"><i class="fa-solid fa-plus"></i></button>
-                        </div>
-                        <ul id="todo-list">
-                            <!-- Esempio di task con pulsante elimina -->
-                            <li>
-                                <label>
-                                    <input type="checkbox">
-                                    <span>Esempio task</span>
-                                </label>
-                                <button class="todo-delete" onclick="this.parentElement.remove()">
-                                    <i class="fa-solid fa-xmark"></i>
-                                </button>
-                            </li>
-                        </ul>
+
+                    <!-- Loading / Error / Table -->
+                    <div id="carico-loading" style="display:none;text-align:center;padding:3rem">
+                        <i class="fas fa-spinner fa-spin" style="font-size:2rem;color:var(--primary-color)"></i>
+                        <p style="margin-top:1rem;color:var(--text-secondary)">Caricamento dati...</p>
                     </div>
-                </section>
+
+                    <div id="carico-error" class="hidden" style="text-align:center;padding:3rem;color:var(--error-color)">
+                        <i class="fas fa-exclamation-triangle" style="font-size:2rem"></i>
+                        <p id="carico-error-text">Errore durante il caricamento</p>
+                    </div>
+
+                    <div class="carico-table-container">
+                        <table id="carico-table" class="carico-table">
+                            <thead>
+                                <tr>
+                                    <th>Data</th><th>Autista</th><th>Benzina</th><th>Diff</th><th>Gasolio</th><th>Diff</th><th>Diesel+</th><th>Diff</th><th>Hvolution</th><th>Diff</th>
+                                </tr>
+                            </thead>
+                            <tbody id="carico-tbody">
+                                <tr>
+                                    <td colspan="10" style="text-align:center;padding:3rem;color:var(--text-muted)">
+                                        <i class="fas fa-download" style="font-size:2rem;margin-bottom:1rem;color:var(--primary-color)"></i>
+                                        <div>Nessun dato caricato</div>
+                                        <small>Importa un file JSON o aggiungi un nuovo carico</small>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Amministrazione Content -->
+                <div class="page-content hidden" id="note-content">
+                    <!-- Statistiche Amministrazione -->
+                    <div class="amministrazione-stats">
+                        <div class="amministrazione-stat-card entrate">
+                            <div class="amministrazione-stat-header">
+                                <div>
+                                    <div class="amministrazione-stat-title">Entrate Totali</div>
+                                    <div class="amministrazione-stat-value" id="amministrazione-entrate-stat">€ 0,00</div>
+                                </div>
+                                <div class="amministrazione-stat-icon">
+                                    <i class="fas fa-arrow-up"></i>
+                                </div>
+                            </div>
+                            <div class="amministrazione-stat-description">
+                                <span id="amministrazione-entrate-count">0</span> operazioni questo mese
+                            </div>
+                        </div>
+
+                        <div class="amministrazione-stat-card uscite">
+                            <div class="amministrazione-stat-header">
+                                <div>
+                                    <div class="amministrazione-stat-title">Uscite Totali</div>
+                                    <div class="amministrazione-stat-value" id="amministrazione-uscite-stat">€ 0,00</div>
+                                </div>
+                                <div class="amministrazione-stat-icon">
+                                    <i class="fas fa-arrow-down"></i>
+                                </div>
+                            </div>
+                            <div class="amministrazione-stat-description">
+                                <span id="amministrazione-uscite-count">0</span> operazioni questo mese
+                            </div>
+                        </div>
+
+                        <div class="amministrazione-stat-card bilancio">
+                            <div class="amministrazione-stat-header">
+                                <div>
+                                    <div class="amministrazione-stat-title">Bilancio</div>
+                                    <div class="amministrazione-stat-value" id="amministrazione-bilancio-stat">€ 0,00</div>
+                                </div>
+                                <div class="amministrazione-stat-icon">
+                                    <i class="fas fa-balance-scale"></i>
+                                </div>
+                            </div>
+                            <div class="amministrazione-stat-description">
+                                Saldo mensile corrente
+                            </div>
+                        </div>
+
+                        <div class="amministrazione-stat-card operazioni">
+                            <div class="amministrazione-stat-header">
+                                <div>
+                                    <div class="amministrazione-stat-title">Operazioni</div>
+                                    <div class="amministrazione-stat-value" id="amministrazione-operazioni-stat">0</div>
+                                </div>
+                                <div class="amministrazione-stat-icon">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                            </div>
+                            <div class="amministrazione-stat-description">
+                                Totale operazioni registrate
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabella Amministrazione -->
+                    <div class="amministrazione-table-container">
+                        <table class="amministrazione-table" id="amministrazione-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Data</th>
+                                    <th>Tipo</th>
+                                    <th>Descrizione</th>
+                                    <th>Importo</th>
+                                    <th>Categoria</th>
+                                    <th>Responsabile</th>
+                                    <th>Azioni</th>
+                                </tr>
+                            </thead>
+                            <tbody id="amministrazione-tbody">
+                                <tr>
+                                    <td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">
+                                        <i class="fas fa-clipboard-list" style="font-size: 2rem; margin-bottom: 1rem; display: block; color: var(--primary-color);"></i>
+                                        <div style="font-size: 1rem; margin-bottom: 0.5rem;">Nessuna operazione registrata</div>
+                                        <div style="font-size: 0.875rem;">Aggiungi la prima operazione amministrativa</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Crediti Clienti Content -->
+                <div class="page-content hidden" id="crediti-content">
+                    <div id="crediti-lista"></div>
+                </div>
             </div>
         </main>
     </div>
 
-    <div class="modal-overlay" id="info-modal">
-        <div class="modal">
+    <!-- Modal Aggiungi Cliente -->
+    <div class="modal" id="add-client-modal">
+        <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">Informazioni Progetto</div>
-                <button class="modal-close-btn" title="Chiudi" onclick="this.closest('.modal-overlay').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+                <h3><i class="fas fa-user-plus"></i> Nuovo Contatto</h3>
+                <button class="modal-close" onclick="window.closeModal('add-client-modal')"><i class="fas fa-times"></i></button>
             </div>
-            <div class="modal-content info-modal-content">
-                <i class="fa-solid fa-brain modal-info-icon"></i>
-                <h1 class="info-modal-brand">CeRBERO</h1>
-                <div class="info-divider"></div>
-                <p>Questo progetto è un gestionale web-based per la contabilità semplificata di una stazione di servizio.</p>
-                <div class="info-divider"></div>
-                <div class="programmer-info">
-                    <strong>Sviluppato da:</strong> NeRO<br>
-                    <a class="info-link" href="mailto:tito.neroni@gmail.com">tito.neroni@gmail.com</a><br>
-                    <a class="info-link" href="https://github.com/tytus44/cerbero" target="_blank">Progetto su GitHub</a>
+            <div class="modal-body">
+                <form id="add-client-form" class="form-grid">
+                    <div class="form-group">
+                        <label for="add-name">Nome *</label>
+                        <input type="text" id="add-name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-phone">Telefono</label>
+                        <input type="tel" id="add-phone" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-email">Email</label>
+                        <input type="email" id="add-email" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-organization">Organizzazione</label>
+                        <input type="text" id="add-organization" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="add-notes">Note</label>
+                        <input type="text" id="add-notes" class="form-input">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="window.closeModal('add-client-modal')">
+                    <i class="fas fa-times"></i> Annulla
+                </button>
+                <button class="btn" onclick="saveNewClient()">
+                    <i class="fas fa-save"></i> Salva
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Modifica Cliente -->
+    <div class="modal" id="edit-client-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> Modifica Contatto</h3>
+                <button class="modal-close" onclick="window.closeModal('edit-client-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-client-form" class="form-grid">
+                    <div class="form-group">
+                        <label for="edit-name">Nome *</label>
+                        <input type="text" id="edit-name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-phone">Telefono</label>
+                        <input type="tel" id="edit-phone" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-email">Email</label>
+                        <input type="email" id="edit-email" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-organization">Organizzazione</label>
+                        <input type="text" id="edit-organization" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-notes">Note</label>
+                        <input type="text" id="edit-notes" class="form-input">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer-with-delete">
+                <div class="modal-footer-left">
+                    <button class="btn btn-danger" onclick="deleteClientFromEdit()">
+                        <i class="fas fa-trash"></i> Elimina
+                    </button>
+                </div>
+                <div class="modal-footer-right">
+                    <button class="btn btn-secondary" onclick="window.closeModal('edit-client-modal')">
+                        <i class="fas fa-times"></i> Annulla
+                    </button>
+                    <button class="btn" onclick="saveClientChanges()">
+                        <i class="fas fa-save"></i> Salva Modifiche
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="confirm-modal">
-        <div class="modal">
+    <!-- Modal Modifica Bulk -->
+    <div class="modal" id="bulk-edit-modal">
+        <div class="modal-content modal-large">
             <div class="modal-header">
-                <div class="modal-title" id="confirm-modal-title">Conferma</div>
-                <button class="modal-close-btn" onclick="this.closest('.modal-overlay').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+                <h3><i class="fas fa-users-cog"></i> Modifica Bulk</h3>
+                <button class="modal-close" onclick="window.closeModal('bulk-edit-modal')"><i class="fas fa-times"></i></button>
             </div>
-            <div class="modal-content">
-                <p id="confirm-modal-text">Sei sicuro di voler procedere?</p>
+            <div class="modal-body">
+                <form id="bulk-edit-form">
+                    <div class="form-group">
+                        <label for="bulk-organization">Organizzazione</label>
+                        <input type="text" id="bulk-organization" class="form-input" placeholder="Lascia vuoto per non modificare">
+                    </div>
+                    <div class="clients-selection" id="clients-selection"></div>
+                </form>
             </div>
-            <div class="modal-actions">
-                <button class="action-btn btn-danger" id="confirm-modal-cancel"><i class="fa-solid fa-xmark"></i>Annulla</button>
-                <button class="action-btn btn-success" id="confirm-modal-ok"><i class="fa-solid fa-check"></i>Conferma</button>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="window.closeModal('bulk-edit-modal')">Annulla</button>
+                <button class="btn" onclick="saveBulkEdit()">Applica Modifiche</button>
             </div>
         </div>
     </div>
 
-    <script src="js/storage.js"></script>
-    <script src="js/index.js"></script>
+    <!-- Modal Nuovo Carico -->
+    <div class="modal" id="add-carico-modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-plus-circle"></i> Nuovo Carico</h3>
+                <button class="modal-close" onclick="window.closeModal('add-carico-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="new-carico-form" class="form-grid">
+                    <div class="form-group">
+                        <label for="new-carico-date">Data*</label>
+                        <input type="date" id="new-carico-date" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-carico-driver">Autista*</label>
+                        <input type="text" id="new-carico-driver" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-carico-benzina">Benzina (L)</label>
+                        <div class="number-input-group">
+                            <button type="button" class="number-decrease" onclick="decreaseValue('new-carico-benzina', 1000)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="new-carico-benzina" class="form-input-number" min="0" step="1000" value="0">
+                            <button type="button" class="number-increase" onclick="increaseValue('new-carico-benzina', 1000)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-carico-diff-benzina">Diff Benzina</label>
+                        <input type="number" id="new-carico-diff-benzina" class="form-input no-spinner">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-carico-gasolio">Gasolio (L)</label>
+                        <div class="number-input-group">
+                            <button type="button" class="number-decrease" onclick="decreaseValue('new-carico-gasolio', 1000)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="new-carico-gasolio" class="form-input-number" min="0" step="1000" value="0">
+                            <button type="button" class="number-increase" onclick="increaseValue('new-carico-gasolio', 1000)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-carico-diff-gasolio">Diff Gasolio</label>
+                        <input type="number" id="new-carico-diff-gasolio" class="form-input no-spinner">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-carico-diesel">Diesel+ (L)</label>
+                        <div class="number-input-group">
+                            <button type="button" class="number-decrease" onclick="decreaseValue('new-carico-diesel', 1000)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="new-carico-diesel" class="form-input-number" min="0" step="1000" value="0">
+                            <button type="button" class="number-increase" onclick="increaseValue('new-carico-diesel', 1000)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-carico-diff-diesel">Diff Diesel+</label>
+                        <input type="number" id="new-carico-diff-diesel" class="form-input no-spinner">
+                    </div>
+                    <div class="form-group">
+                        <label for="new-carico-hvolution">Hvolution (L)</label>
+                        <div class="number-input-group">
+                            <button type="button" class="number-decrease" onclick="decreaseValue('new-carico-hvolution', 1000)">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <input type="number" id="new-carico-hvolution" class="form-input-number" min="0" step="1000" value="0">
+                            <button type="button" class="number-increase" onclick="increaseValue('new-carico-hvolution', 1000)">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-carico-diff-hvolution">Diff Hvolution</label>
+                        <input type="number" id="new-carico-diff-hvolution" class="form-input no-spinner">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="window.closeModal('add-carico-modal')">
+                    <i class="fas fa-times"></i> Annulla
+                </button>
+                <button class="btn" id="save-carico-btn">
+                    <i class="fas fa-save"></i> Salva Carico
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nuova Operazione Amministrativa -->
+    <div class="modal" id="add-amministrazione-modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-plus-circle"></i> Nuova Operazione</h3>
+                <button class="modal-close" onclick="window.closeModal('add-amministrazione-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="new-amministrazione-form" class="form-grid">
+                    <div class="form-group">
+                        <label for="new-amministrazione-date">Data*</label>
+                        <input type="date" id="new-amministrazione-date" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-amministrazione-tipo">Tipo*</label>
+                        <select id="new-amministrazione-tipo" class="form-input" required>
+                            <option value="">Seleziona tipo</option>
+                            <option value="entrata">Entrata</option>
+                            <option value="uscita">Uscita</option>
+                            <option value="in-sospeso">In sospeso</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="new-amministrazione-descrizione">Descrizione*</label>
+                        <input type="text" id="new-amministrazione-descrizione" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-amministrazione-importo">Importo (€)*</label>
+                        <input type="number" id="new-amministrazione-importo" class="form-input" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-amministrazione-categoria">Categoria</label>
+                        <select id="new-amministrazione-categoria" class="form-input">
+                            <option value="">Seleziona categoria</option>
+                            <option value="carburante">Carburante</option>
+                            <option value="manutenzione">Manutenzione</option>
+                            <option value="utenze">Utenze</option>
+                            <option value="personale">Personale</option>
+                            <option value="forniture">Forniture</option>
+                            <option value="vendite">Vendite</option>
+                            <option value="servizi">Servizi</option>
+                            <option value="altro">Altro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-amministrazione-responsabile">Responsabile</label>
+                        <input type="text" id="new-amministrazione-responsabile" class="form-input">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="new-amministrazione-note">Note</label>
+                        <textarea id="new-amministrazione-note" class="form-textarea" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="window.closeModal('add-amministrazione-modal')">
+                    <i class="fas fa-times"></i> Annulla
+                </button>
+                <button class="btn" id="save-amministrazione-btn">
+                    <i class="fas fa-save"></i> Salva Operazione
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Modifica Operazione Amministrativa -->
+    <div class="modal" id="edit-amministrazione-modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-edit"></i> Modifica Operazione</h3>
+                <button class="modal-close" onclick="window.closeModal('edit-amministrazione-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-amministrazione-form" class="form-grid">
+                    <div class="form-group">
+                        <label for="edit-amministrazione-date">Data*</label>
+                        <input type="date" id="edit-amministrazione-date" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-amministrazione-tipo">Tipo*</label>
+                        <select id="edit-amministrazione-tipo" class="form-input" required>
+                            <option value="entrata">Entrata</option>
+                            <option value="uscita">Uscita</option>
+                            <option value="in-sospeso">In sospeso</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="edit-amministrazione-descrizione">Descrizione*</label>
+                        <input type="text" id="edit-amministrazione-descrizione" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-amministrazione-importo">Importo (€)*</label>
+                        <input type="number" id="edit-amministrazione-importo" class="form-input" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-amministrazione-responsabile">Responsabile</label>
+                        <input type="text" id="edit-amministrazione-responsabile" class="form-input">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="edit-amministrazione-note">Note</label>
+                        <textarea id="edit-amministrazione-note" class="form-textarea" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer-with-delete">
+                <div class="modal-footer-left">
+                    <button class="btn btn-danger" onclick="deleteAmministrazioneFromEdit()">
+                        <i class="fas fa-trash"></i> Elimina
+                    </button>
+                </div>
+                <div class="modal-footer-right">
+                    <button class="btn btn-secondary" onclick="window.closeModal('edit-amministrazione-modal')">
+                        <i class="fas fa-times"></i> Annulla
+                    </button>
+                    <button class="btn" onclick="saveAmministrazioneChanges()">
+                        <i class="fas fa-save"></i> Salva Modifiche
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nuovo Cliente Crediti -->
+    <div class="modal" id="nuovo-cliente-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus"></i> Nuovo Cliente</h3>
+                <button class="modal-close" onclick="window.closeModal('nuovo-cliente-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="form-nuovo-cliente" class="form-grid">
+                <div class="form-group">
+                    <label>Nome*</label>
+                    <input type="text" id="cliente-nome" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefono</label>
+                    <input type="tel" id="cliente-telefono" class="form-input">
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="window.closeModal('nuovo-cliente-modal')">Annulla</button>
+                <button class="btn" type="submit" form="form-nuovo-cliente">Salva</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nuova Transazione -->
+    <div class="modal" id="nuova-transazione-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Nuova Transazione</h3>
+                <button class="modal-close" onclick="window.closeModal('nuova-transazione-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="form-transazione" class="form-grid">
+                <div class="form-group">
+                    <label>Cliente*</label>
+                    <select id="transazione-cliente" class="form-input" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Data (gg/mm)*</label>
+                    <input type="text" id="transazione-data" class="form-input" placeholder="15/08" maxlength="5" required>
+                </div>
+                <div class="form-group">
+                    <label>Descrizione</label>
+                    <input type="text" id="transazione-descrizione" class="form-input" value="Carburante">
+                </div>
+                <div class="form-group">
+                    <label>Importo (€)*</label>
+                    <input type="number" id="transazione-importo" class="form-input" step="0.01" required>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="window.closeModal('nuova-transazione-modal')">Annulla</button>
+                <button class="btn" type="submit" form="form-transazione">Salva</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal About -->
+    <div class="modal" id="about-modal">
+        <div class="modal-content modal-about">
+            <div class="modal-header">
+                <button class="modal-close" onclick="window.closeModal('about-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="about-content">
+                    <div class="about-logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-cube"></i>
+                        </div>
+                    </div>
+                    <h2 class="about-title">MyStation</h2>
+                    <div class="about-description">
+                        <p>Applicazione web per la gestione di un impianto di distribuzione carburanti, con funzioni di cassa, vendite, registro carico di carburanti, monitoraggio del credito e dashboard grafiche.</p>
+                    </div>
+                    <div class="about-footer">
+                        <p>Sviluppato con ❤️ da: <strong>NeRO</strong></p>
+                    </div>
+                    <div class="about-links">
+                        <a href="https://github.com/tytus44/MyStation" target="_blank" class="about-link">
+                            <i class="fab fa-github"></i>
+                            Progetto su GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals sistema -->
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle" style="color:var(--success-color)"></i> Operazione Completata</h3>
+                <button class="modal-close" onclick="window.closeModal('success-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p id="success-message">Operazione completata con successo!</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="window.closeModal('success-modal')">OK</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="confirm-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle" style="color:var(--warning-color)"></i> Conferma</h3>
+                <button class="modal-close" onclick="window.closeModal('confirm-modal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-message">Sei sicuro di voler procedere?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="window.closeModal('confirm-modal')">Annulla</button>
+                <button class="btn btn-danger" id="confirm-action">Conferma</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="carico.js"></script>
+    <script src="applicazione.js"></script>
+    <script src="amministrazione.js"></script>
+    <script>
+        // Funzioni per i controlli numerici laterali
+        function increaseValue(inputId, step) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                const currentValue = parseInt(input.value) || 0;
+                input.value = currentValue + step;
+            }
+        }
+        
+        function decreaseValue(inputId, step) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                const currentValue = parseInt(input.value) || 0;
+                const newValue = currentValue - step;
+                input.value = newValue >= 0 ? newValue : 0;
+            }
+        }
+    </script>
 </body>
 </html>
