@@ -175,6 +175,9 @@ vcfFileInput.addEventListener('change', (event) => {
         reader.onload = (e) => {
             const content = e.target.result;
             allContacts = parseVCF(content);
+            if (window.MemoriaStorage) {
+                MemoriaStorage.saveContacts(allContacts);
+            }
             renderContacts(allContacts);
         };
         reader.readAsText(file);
@@ -208,6 +211,9 @@ exportBtn.addEventListener('click', () => {
 deleteAllBtn.addEventListener('click', () => {
     if (confirm('Sei sicuro di voler eliminare tutti i contatti? Questa azione non può essere annullata.')) {
         allContacts = [];
+        if (window.MemoriaStorage) {
+            MemoriaStorage.saveContacts(allContacts);
+        }
         renderContacts(allContacts);
     }
 });
@@ -243,6 +249,9 @@ saveContactBtn.addEventListener('click', () => {
     };
 
     allContacts.push(newContact);
+    if (window.MemoriaStorage) {
+        MemoriaStorage.saveContacts(allContacts);
+    }
     renderContacts(allContacts);
     newContactModal.style.display = 'none';
 
@@ -257,5 +266,12 @@ saveContactBtn.addEventListener('click', () => {
 window.addEventListener('click', (event) => {
     if (event.target == newContactModal) {
         newContactModal.style.display = 'none';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.MemoriaStorage) {
+        allContacts = MemoriaStorage.loadContacts();
+        renderContacts(allContacts);
     }
 });

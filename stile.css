@@ -35,6 +35,11 @@ html {
     --accent-info: #3498DB;
     --border-color: #191C24;
     --shadow-color: rgba(0, 0, 0, 0.3);
+
+    /* Nuove variabili per ombre unificate */
+    --shadow-sm: 0 2px 4px var(--shadow-color);
+    --shadow-md: 0 4px 12px var(--shadow-color);
+    --shadow-lg: 0 15px 30px var(--shadow-color);
 }
 
 /* Tema chiaro */
@@ -150,8 +155,8 @@ body {
     margin-bottom: 24px;
     /* Animazione slide-in */
     animation: slideIn 0.6s ease-out;
-    /* Ombra sottile per profondità */
-    box-shadow: 0 2px 8px var(--shadow-color);
+    /* Ombra unificata */
+    box-shadow: var(--shadow-md);
     /* Transizione per tema */
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
@@ -188,10 +193,8 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    /* Ombra prominente per effetto flottante */
-    box-shadow: 
-        0 8px 32px var(--shadow-color),
-        0 2px 8px var(--shadow-color);
+    /* Ombra unificata */
+    box-shadow: var(--shadow-lg);
     /* Animazione d'ingresso */
     animation: slideDown 0.4s ease-out;
     /* Transizione per tema */
@@ -203,6 +206,11 @@ body {
 #amministrazione-content .floating-toolbar,
 #registro-content .floating-toolbar {
     margin-top: 0;
+}
+
+/* Centra la toolbar del registro che ha solo pulsanti */
+#registro-content .floating-toolbar {
+    justify-content: center;
 }
 
 /* ============================================
@@ -391,7 +399,7 @@ body {
 /* Hover state card contatto */
 .contact-box:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 16px var(--shadow-color);
+    box-shadow: var(--shadow-lg);
     border-color: rgba(29, 98, 236, 0.2);
 }
 
@@ -520,10 +528,8 @@ body {
     max-width: 500px;
     max-height: 90vh;
     overflow-y: auto;
-    /* Ombra prominente */
-    box-shadow: 
-        0 10px 25px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.05);
+    /* Ombra unificata */
+    box-shadow: var(--shadow-lg);
     /* Animazione slide-in */
     animation: slideUp 0.3s ease;
     /* Transizione per tema */
@@ -550,8 +556,7 @@ body {
 /* Pulsante chiudi modal */
 .close-btn {
     color: var(--text-secondary);
-    font-size: 24px;
-    font-weight: bold;
+    font-size: 28px;
     cursor: pointer;
     line-height: 1;
     padding: 0;
@@ -561,8 +566,9 @@ body {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
     position: relative;
+    transform: translateY(-1px);
 }
 
 .close-btn:hover,
@@ -686,7 +692,7 @@ body {
 
 .client-box:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px var(--shadow-color);
+    box-shadow: var(--shadow-lg);
     border-color: rgba(29, 98, 236, 0.2);
 }
 

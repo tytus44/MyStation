@@ -744,10 +744,8 @@ document.addEventListener('DOMContentLoaded', () => {
      * Salva dati in localStorage
      */
     function saveToLocalStorage() {
-        try {
-            localStorage.setItem('amministrazione_clients', JSON.stringify(allClients));
-        } catch (error) {
-            console.error('Errore salvataggio localStorage:', error);
+        if (window.MemoriaStorage) {
+            MemoriaStorage.saveClients(allClients);
         }
     }
     
@@ -755,24 +753,9 @@ document.addEventListener('DOMContentLoaded', () => {
      * Carica dati da localStorage
      */
     function loadFromLocalStorage() {
-        try {
-            const stored = localStorage.getItem('amministrazione_clients');
-            if (stored) {
-                allClients = JSON.parse(stored);
-                // Assicura che ogni cliente abbia un colore
-                allClients.forEach(client => {
-                    if (!client.color) {
-                        client.color = getRandomColor();
-                    }
-                    if (!client.transactions) {
-                        client.transactions = [];
-                    }
-                });
-                renderClients(allClients);
-            }
-        } catch (error) {
-            console.error('Errore caricamento localStorage:', error);
-            allClients = [];
+        if (window.MemoriaStorage) {
+            allClients = MemoriaStorage.loadClients();
+            renderClients(allClients);
         }
     }
     
