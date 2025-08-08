@@ -8,60 +8,60 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     // ELEMENTI DOM
     // ============================================
-    
+
     // Griglia e ricerca
     const clientsGrid = document.getElementById('clients-grid');
     const searchClientInput = document.getElementById('search-client-input');
     const clearClientSearchBtn = document.getElementById('clear-client-search-btn');
-    
+
     // Pulsanti toolbar
     const newClientBtn = document.getElementById('new-client-btn');
     const importClientsBtn = document.getElementById('import-clients-btn');
     const exportClientsBtn = document.getElementById('export-clients-btn');
     const printClientsBtn = document.getElementById('print-clients-btn');
-    
+
     // Modale nuovo cliente
     const newClientModal = document.getElementById('new-client-modal');
     const closeClientModalBtn = document.getElementById('close-client-modal-btn');
     const saveClientBtn = document.getElementById('save-client-btn');
-    
+
     // Modale transazione
     const transactionModal = document.getElementById('transaction-modal');
     const closeTransactionModalBtn = document.getElementById('close-transaction-modal-btn');
     const clientNameHeader = document.getElementById('client-name-header');
     const clientBalanceHeader = document.getElementById('client-balance-header');
-    
+
     // Pulsanti transazione
     const payFullBtn = document.getElementById('pay-full-btn');
     const payPartialBtn = document.getElementById('pay-partial-btn');
     const printTransactionBtn = document.getElementById('print-transaction-btn');
     const deleteClientBtn = document.getElementById('delete-client-btn');
     const viewHistoryBtn = document.getElementById('view-history-btn');
-    
+
     // Modale storico
     const historyModal = document.getElementById('history-modal');
     const closeHistoryModalBtn = document.getElementById('close-history-modal-btn');
     const historyTableBody = document.getElementById('history-table-body');
     const historyClientName = document.getElementById('history-client-name');
-    
+
     // Input nascosti
     const clientsFileInput = document.getElementById('clients-file-input');
-    
+
     // Alert personalizzato
     const customAlertBox = document.getElementById('custom-alert-box');
-    
+
     // ============================================
     // STATO APPLICAZIONE
     // ============================================
-    
+
     let allClients = [];
     let currentClientIndex = -1;
     let editingTransactionIndex = -1;
-    
+
     // ============================================
     // FUNZIONI UTILITY
     // ============================================
-    
+
     /**
      * Mostra alert personalizzato
      */
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             customAlertBox.classList.remove('show');
         }, 3000);
     }
-    
+
     /**
      * Genera colore casuale per icone
      */
@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ];
         return colors[Math.floor(Math.random() * colors.length)];
     }
-    
+
     /**
      * Formatta numero con separatore migliaia e simbolo euro
      */
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             maximumFractionDigits: 2
         }).format(amount);
     }
-    
+
     /**
      * Parsifica stringa valuta in numero
      */
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const normalized = cleanStr.replace(',', '.');
         return parseFloat(normalized) || 0;
     }
-    
+
     /**
      * Formatta data in formato italiano
      */
@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const [year, month, day] = dateStr.split('-');
         return `${day}/${month}/${year}`;
     }
-    
+
     /**
      * Converte data italiana in formato ISO
      */
@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const [day, month, year] = dateStr.split('/');
         return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
     }
-    
+
     /**
      * Ottiene data odierna in formato ISO
      */
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const day = String(today.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     }
-    
+
     /**
      * Calcola totale cliente
      */
@@ -150,32 +150,32 @@ document.addEventListener('DOMContentLoaded', () => {
             return total + (trans.amount || 0);
         }, 0);
     }
-    
+
     // ============================================
     // RENDERING
     // ============================================
-    
+
     /**
      * Renderizza griglia clienti
      */
     function renderClients(clients) {
         if (!clientsGrid) return;
-        
+
         clientsGrid.innerHTML = '';
-        
+
         if (clients.length === 0) {
             clientsGrid.innerHTML = '<p style="text-align: center; color: #61667A; padding: 40px;">Nessun cliente trovato.</p>';
             return;
         }
-        
+
         clients.forEach((client, index) => {
             const clientBox = document.createElement('div');
             clientBox.classList.add('client-box');
             clientBox.dataset.clientIndex = index;
-            
+
             const total = calculateClientTotal(client);
             const totalClass = total > 0 ? 'client-debt' : 'client-credit';
-            
+
             clientBox.innerHTML = `
                 <div class="client-header">
                     <div class="client-icon-container" style="background: ${client.color || getRandomColor()}">
@@ -187,27 +187,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
                 <div class="client-status">
-                    ${total > 0 ? '<span class="status-badge debt">Da pagare</span>' : 
-                      total < 0 ? '<span class="status-badge credit">Credito</span>' : 
+                    ${total > 0 ? '<span class="status-badge debt">Da pagare</span>' :
+                      total < 0 ? '<span class="status-badge credit">Credito</span>' :
                       '<span class="status-badge paid">Saldato</span>'}
                 </div>
             `;
-            
+
             // Click su box cliente apre modale transazione
             clientBox.addEventListener('click', () => openTransactionModal(index));
-            
+
             clientsGrid.appendChild(clientBox);
         });
     }
-    
+
     /**
      * Renderizza tabella storico
      */
     function renderHistory(client) {
         if (!historyTableBody) return;
-        
+
         historyTableBody.innerHTML = '';
-        
+
         if (!client.transactions || client.transactions.length === 0) {
             historyTableBody.innerHTML = `
                 <tr>
@@ -216,20 +216,20 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             return;
         }
-        
+
         client.transactions.forEach((trans, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>
-                    <input type="text" class="history-date-input" value="${formatDate(trans.date)}" 
+                    <input type="text" class="history-date-input" value="${formatDate(trans.date)}"
                            data-trans-index="${index}" data-field="date">
                 </td>
                 <td>
-                    <input type="text" class="history-desc-input" value="${trans.description || ''}" 
+                    <input type="text" class="history-desc-input" value="${trans.description || ''}"
                            data-trans-index="${index}" data-field="description">
                 </td>
                 <td class="${trans.amount > 0 ? 'amount-positive' : 'amount-negative'}">
-                    <input type="text" class="history-amount-input" value="${formatCurrency(trans.amount)}" 
+                    <input type="text" class="history-amount-input" value="${formatCurrency(trans.amount)}"
                            data-trans-index="${index}" data-field="amount">
                 </td>
                 <td>
@@ -243,18 +243,18 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             historyTableBody.appendChild(row);
         });
-        
+
         // Aggiungi event listeners per modifica inline
         historyTableBody.querySelectorAll('input').forEach(input => {
             input.addEventListener('change', handleHistoryEdit);
         });
-        
+
         // Aggiungi event listeners per eliminazione
         historyTableBody.querySelectorAll('.history-delete-btn').forEach(btn => {
             btn.addEventListener('click', handleHistoryDelete);
         });
     }
-    
+
     /**
      * Ottiene etichetta tipo transazione
      */
@@ -266,24 +266,24 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         return labels[type] || 'Addebito';
     }
-    
+
     // ============================================
     // GESTIONE MODALI
     // ============================================
-    
+
     /**
      * Apre modale nuovo cliente
      */
     function openNewClientModal() {
         if (!newClientModal) return;
-        
+
         // Reset form
         document.getElementById('client-name-input').value = '';
         document.getElementById('client-initial-balance').value = '';
-        
+
         newClientModal.style.display = 'flex';
     }
-    
+
     /**
      * Chiude modale nuovo cliente
      */
@@ -291,30 +291,30 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!newClientModal) return;
         newClientModal.style.display = 'none';
     }
-    
+
     /**
      * Apre modale transazione
      */
     function openTransactionModal(index) {
         if (!transactionModal || index < 0 || index >= allClients.length) return;
-        
+
         currentClientIndex = index;
         const client = allClients[index];
         const total = calculateClientTotal(client);
-        
+
         // Aggiorna header
         clientNameHeader.textContent = client.name;
         clientBalanceHeader.textContent = formatCurrency(total);
         clientBalanceHeader.className = total > 0 ? 'balance-debt' : 'balance-credit';
-        
+
         // Reset form
         document.getElementById('transaction-date').value = getTodayISO();
         document.getElementById('transaction-description').value = '';
         document.getElementById('transaction-amount').value = '';
-        
+
         transactionModal.style.display = 'flex';
     }
-    
+
     /**
      * Chiude modale transazione
      */
@@ -323,20 +323,20 @@ document.addEventListener('DOMContentLoaded', () => {
         transactionModal.style.display = 'none';
         currentClientIndex = -1;
     }
-    
+
     /**
      * Apre modale storico
      */
     function openHistoryModal() {
         if (!historyModal || currentClientIndex < 0) return;
-        
+
         const client = allClients[currentClientIndex];
         historyClientName.textContent = client.name;
-        
+
         renderHistory(client);
         historyModal.style.display = 'flex';
     }
-    
+
     /**
      * Chiude modale storico
      */
@@ -344,23 +344,23 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!historyModal) return;
         historyModal.style.display = 'none';
     }
-    
+
     // ============================================
     // GESTIONE CLIENTI
     // ============================================
-    
+
     /**
      * Salva nuovo cliente
      */
     function saveNewClient() {
         const name = document.getElementById('client-name-input').value.trim();
         const initialBalance = parseCurrency(document.getElementById('client-initial-balance').value);
-        
+
         if (!name) {
             showAlert('Il nome del cliente è obbligatorio');
             return;
         }
-        
+
         const newClient = {
             id: Date.now().toString(),
             name: name,
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
             transactions: [],
             createdAt: new Date().toISOString()
         };
-        
+
         // Se c'è un saldo iniziale, crea transazione
         if (initialBalance !== 0) {
             newClient.transactions.push({
@@ -378,22 +378,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 type: initialBalance > 0 ? 'charge' : 'payment'
             });
         }
-        
+
         allClients.push(newClient);
         renderClients(allClients);
         closeNewClientModal();
         saveToLocalStorage();
         showAlert('Cliente aggiunto con successo');
     }
-    
+
     /**
      * Elimina cliente
      */
     function deleteClient() {
         if (currentClientIndex < 0) return;
-        
+
         const client = allClients[currentClientIndex];
-        
+
         if (confirm(`Sei sicuro di voler eliminare il cliente "${client.name}"? Questa azione non può essere annullata.`)) {
             allClients.splice(currentClientIndex, 1);
             renderClients(allClients);
@@ -402,47 +402,47 @@ document.addEventListener('DOMContentLoaded', () => {
             showAlert('Cliente eliminato');
         }
     }
-    
+
     // ============================================
     // GESTIONE TRANSAZIONI
     // ============================================
-    
+
     /**
      * Aggiunge transazione
      */
     function addTransaction(type) {
         if (currentClientIndex < 0) return;
-        
+
         const date = document.getElementById('transaction-date').value;
         const description = document.getElementById('transaction-description').value.trim() || 'Carburante';
         const amount = parseCurrency(document.getElementById('transaction-amount').value);
-        
+
         if (!date) {
             showAlert('La data è obbligatoria');
             return;
         }
-        
+
         if (amount <= 0) {
             showAlert('L\'importo deve essere maggiore di zero');
             return;
         }
-        
+
         const client = allClients[currentClientIndex];
-        
+
         if (!client.transactions) {
             client.transactions = [];
         }
-        
+
         // Determina l'importo in base al tipo
         let transactionAmount = amount;
         let transactionType = type;
-        
+
         if (type === 'payment' || type === 'partial') {
             transactionAmount = -amount; // Pagamenti sono negativi
         } else {
             transactionType = 'charge';
         }
-        
+
         // Aggiungi transazione
         client.transactions.push({
             date: date,
@@ -451,31 +451,31 @@ document.addEventListener('DOMContentLoaded', () => {
             type: transactionType,
             timestamp: new Date().toISOString()
         });
-        
+
         // Aggiorna UI
         const total = calculateClientTotal(client);
         clientBalanceHeader.textContent = formatCurrency(total);
         clientBalanceHeader.className = total > 0 ? 'balance-debt' : 'balance-credit';
-        
+
         // Reset form
         document.getElementById('transaction-description').value = '';
         document.getElementById('transaction-amount').value = '';
-        
+
         // Salva e aggiorna
         saveToLocalStorage();
         renderClients(allClients);
-        
-        const message = type === 'payment' ? 'Pagamento completo registrato' : 
-                       type === 'partial' ? 'Acconto registrato' : 
+
+        const message = type === 'payment' ? 'Pagamento completo registrato' :
+                       type === 'partial' ? 'Acconto registrato' :
                        'Addebito registrato';
         showAlert(message);
-        
+
         // Se pagamento completo e saldo è 0, chiudi modale
         if (type === 'payment' && Math.abs(total) < 0.01) {
             setTimeout(() => closeTransactionModal(), 1500);
         }
     }
-    
+
     /**
      * Gestisce modifica storico
      */
@@ -483,12 +483,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const input = e.target;
         const transIndex = parseInt(input.dataset.transIndex);
         const field = input.dataset.field;
-        
+
         if (currentClientIndex < 0 || transIndex < 0) return;
-        
+
         const client = allClients[currentClientIndex];
         const transaction = client.transactions[transIndex];
-        
+
         switch(field) {
             case 'date':
                 const isoDate = parseItalianDate(input.value);
@@ -505,51 +505,51 @@ document.addEventListener('DOMContentLoaded', () => {
                 transaction.type = amount > 0 ? 'charge' : 'payment';
                 break;
         }
-        
+
         saveToLocalStorage();
         renderClients(allClients);
-        
+
         // Aggiorna balance nel modale transazione
         const total = calculateClientTotal(client);
         clientBalanceHeader.textContent = formatCurrency(total);
         clientBalanceHeader.className = total > 0 ? 'balance-debt' : 'balance-credit';
     }
-    
+
     /**
      * Gestisce eliminazione da storico
      */
     function handleHistoryDelete(e) {
         const btn = e.target.closest('.history-delete-btn');
         const transIndex = parseInt(btn.dataset.transIndex);
-        
+
         if (currentClientIndex < 0 || transIndex < 0) return;
-        
+
         if (confirm('Eliminare questa transazione?')) {
             const client = allClients[currentClientIndex];
             client.transactions.splice(transIndex, 1);
-            
+
             saveToLocalStorage();
             renderClients(allClients);
             renderHistory(client);
-            
+
             // Aggiorna balance
             const total = calculateClientTotal(client);
             clientBalanceHeader.textContent = formatCurrency(total);
             clientBalanceHeader.className = total > 0 ? 'balance-debt' : 'balance-credit';
-            
+
             showAlert('Transazione eliminata');
         }
     }
-    
+
     /**
      * Stampa transazione
      */
     function printTransaction() {
         if (currentClientIndex < 0) return;
-        
+
         const client = allClients[currentClientIndex];
         const total = calculateClientTotal(client);
-        
+
         const printWindow = window.open('', '_blank');
         printWindow.document.write(`
             <!DOCTYPE html>
@@ -598,11 +598,11 @@ document.addEventListener('DOMContentLoaded', () => {
         printWindow.document.close();
         printWindow.print();
     }
-    
+
     // ============================================
     // RICERCA
     // ============================================
-    
+
     /**
      * Aggiorna UI ricerca
      */
@@ -610,7 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!clearClientSearchBtn) return;
         clearClientSearchBtn.style.display = query.length > 0 ? 'block' : 'none';
     }
-    
+
     /**
      * Filtra clienti
      */
@@ -622,11 +622,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         renderClients(filteredClients);
     }
-    
+
     // ============================================
     // IMPORT/EXPORT
     // ============================================
-    
+
     /**
      * Esporta clienti in JSON
      */
@@ -641,7 +641,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.removeChild(link);
         showAlert('Clienti esportati con successo');
     }
-    
+
     /**
      * Importa clienti da JSON
      */
@@ -660,7 +660,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             client.transactions = [];
                         }
                     });
-                    
+
                     allClients = [...allClients, ...importedClients];
                     renderClients(allClients);
                     saveToLocalStorage();
@@ -675,7 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         reader.readAsText(file);
     }
-    
+
     /**
      * Stampa lista clienti
      */
@@ -692,9 +692,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 </tr>
             `;
         }).join('');
-        
+
         const totalGeneral = allClients.reduce((sum, client) => sum + calculateClientTotal(client), 0);
-        
+
         printWindow.document.write(`
             <!DOCTYPE html>
             <html>
@@ -735,11 +735,11 @@ document.addEventListener('DOMContentLoaded', () => {
         printWindow.document.close();
         printWindow.print();
     }
-    
+
     // ============================================
     // LOCAL STORAGE
     // ============================================
-    
+
     /**
      * Salva dati in localStorage
      */
@@ -748,7 +748,7 @@ document.addEventListener('DOMContentLoaded', () => {
             MemoriaStorage.saveClients(allClients);
         }
     }
-    
+
     /**
      * Carica dati da localStorage
      */
@@ -758,11 +758,11 @@ document.addEventListener('DOMContentLoaded', () => {
             renderClients(allClients);
         }
     }
-    
+
     // ============================================
     // EVENT LISTENERS
     // ============================================
-    
+
     // Ricerca
     if (searchClientInput) {
         searchClientInput.addEventListener('input', (e) => {
@@ -771,7 +771,7 @@ document.addEventListener('DOMContentLoaded', () => {
             filterClients(query);
         });
     }
-    
+
     if (clearClientSearchBtn) {
         clearClientSearchBtn.addEventListener('click', () => {
             searchClientInput.value = '';
@@ -779,26 +779,26 @@ document.addEventListener('DOMContentLoaded', () => {
             renderClients(allClients);
         });
     }
-    
+
     // Toolbar buttons
     if (newClientBtn) {
         newClientBtn.addEventListener('click', openNewClientModal);
     }
-    
+
     if (importClientsBtn) {
         importClientsBtn.addEventListener('click', () => {
             clientsFileInput.click();
         });
     }
-    
+
     if (exportClientsBtn) {
         exportClientsBtn.addEventListener('click', exportClients);
     }
-    
+
     if (printClientsBtn) {
         printClientsBtn.addEventListener('click', printClientsList);
     }
-    
+
     // File input
     if (clientsFileInput) {
         clientsFileInput.addEventListener('change', (e) => {
@@ -809,46 +809,46 @@ document.addEventListener('DOMContentLoaded', () => {
             clientsFileInput.value = '';
         });
     }
-    
+
     // Modale nuovo cliente
     if (closeClientModalBtn) {
         closeClientModalBtn.addEventListener('click', closeNewClientModal);
     }
-    
+
     if (saveClientBtn) {
         saveClientBtn.addEventListener('click', saveNewClient);
     }
-    
+
     // Modale transazione
     if (closeTransactionModalBtn) {
         closeTransactionModalBtn.addEventListener('click', closeTransactionModal);
     }
-    
+
     if (payFullBtn) {
         payFullBtn.addEventListener('click', () => addTransaction('payment'));
     }
-    
+
     if (payPartialBtn) {
         payPartialBtn.addEventListener('click', () => addTransaction('partial'));
     }
-    
+
     if (printTransactionBtn) {
         printTransactionBtn.addEventListener('click', printTransaction);
     }
-    
+
     if (deleteClientBtn) {
         deleteClientBtn.addEventListener('click', deleteClient);
     }
-    
+
     if (viewHistoryBtn) {
         viewHistoryBtn.addEventListener('click', openHistoryModal);
     }
-    
+
     // Modale storico
     if (closeHistoryModalBtn) {
         closeHistoryModalBtn.addEventListener('click', closeHistoryModal);
     }
-    
+
     // Click fuori dai modali per chiuderli
     window.addEventListener('click', (event) => {
         if (event.target === newClientModal) {
@@ -861,7 +861,7 @@ document.addEventListener('DOMContentLoaded', () => {
             closeHistoryModal();
         }
     });
-    
+
     // Formattazione automatica importo durante digitazione
     const amountInput = document.getElementById('transaction-amount');
     if (amountInput) {
@@ -876,14 +876,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
+
     // ============================================
     // INIZIALIZZAZIONE
     // ============================================
-    
+
     // Carica dati all'avvio
     loadFromLocalStorage();
-    
+
     // Se non ci sono clienti, mostra messaggio
     if (allClients.length === 0 && clientsGrid) {
         renderClients([]);

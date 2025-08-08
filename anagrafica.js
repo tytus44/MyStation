@@ -13,6 +13,14 @@ const customAlertBox = document.getElementById('custom-alert-box');
 
 let allContacts = [];
 
+// Load contacts from storage on startup
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.MemoriaStorage) {
+        allContacts = MemoriaStorage.loadContacts();
+        renderContacts(allContacts);
+    }
+});
+
 // Custom alert function
 function showAlert(message) {
     customAlertBox.textContent = message;
@@ -106,7 +114,7 @@ function renderContacts(contacts) {
             emailItem.innerHTML = `<i class="fas fa-envelope"></i> <span>${contact.EMAIL}</span>`;
             infoList.appendChild(emailItem);
         }
-        
+
         if (contact.NOTE) {
             const notesItem = document.createElement('li');
             notesItem.classList.add('contact-info-item');
@@ -166,7 +174,7 @@ clearSearchBtn.addEventListener('click', () => {
 importBtn.addEventListener('click', () => {
     vcfFileInput.click();
 });
-    
+
 // VCF file input change event listener
 vcfFileInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
@@ -266,12 +274,5 @@ saveContactBtn.addEventListener('click', () => {
 window.addEventListener('click', (event) => {
     if (event.target == newContactModal) {
         newContactModal.style.display = 'none';
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.MemoriaStorage) {
-        allContacts = MemoriaStorage.loadContacts();
-        renderContacts(allContacts);
     }
 });

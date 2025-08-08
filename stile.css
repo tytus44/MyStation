@@ -35,11 +35,6 @@ html {
     --accent-info: #3498DB;
     --border-color: #191C24;
     --shadow-color: rgba(0, 0, 0, 0.3);
-
-    /* Nuove variabili per ombre unificate */
-    --shadow-sm: 0 2px 4px var(--shadow-color);
-    --shadow-md: 0 4px 12px var(--shadow-color);
-    --shadow-lg: 0 15px 30px var(--shadow-color);
 }
 
 /* Tema chiaro */
@@ -156,7 +151,7 @@ body {
     /* Animazione slide-in */
     animation: slideIn 0.6s ease-out;
     /* Ombra unificata */
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 12px var(--shadow-color);
     /* Transizione per tema */
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
@@ -194,7 +189,7 @@ body {
     justify-content: space-between;
     gap: 24px;
     /* Ombra unificata */
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 4px 12px var(--shadow-color);
     /* Animazione d'ingresso */
     animation: slideDown 0.4s ease-out;
     /* Transizione per tema */
@@ -317,7 +312,7 @@ body {
     cursor: pointer;
     white-space: nowrap;
     /* Transizioni ottimizzate con transform per performance */
-    transition: 
+    transition:
         background-color 0.3s ease,
         transform 0.2s ease,
         box-shadow 0.3s ease;
@@ -387,7 +382,7 @@ body {
     flex-direction: column;
     gap: 16px;
     /* Transizioni per interazioni */
-    transition: 
+    transition:
         transform 0.2s ease,
         box-shadow 0.2s ease,
         border-color 0.2s ease,
@@ -399,7 +394,7 @@ body {
 /* Hover state card contatto */
 .contact-box:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 6px 18px var(--shadow-color);
     border-color: rgba(29, 98, 236, 0.2);
 }
 
@@ -529,7 +524,7 @@ body {
     max-height: 90vh;
     overflow-y: auto;
     /* Ombra unificata */
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 8px 24px var(--shadow-color);
     /* Animazione slide-in */
     animation: slideUp 0.3s ease;
     /* Transizione per tema */
@@ -640,7 +635,7 @@ body {
     color: white;
     border-radius: 12px;
     /* Ombra prominente */
-    box-shadow: 
+    box-shadow:
         0 4px 20px rgba(29, 98, 236, 0.4),
         0 8px 32px rgba(0, 0, 0, 0.3);
     z-index: 2000;
@@ -650,7 +645,7 @@ body {
     opacity: 0;
     pointer-events: none;
     /* Transizioni */
-    transition: 
+    transition:
         opacity 0.3s ease,
         transform 0.3s ease;
 }
@@ -682,7 +677,7 @@ body {
     padding: 24px;
     border: 1px solid var(--border-color);
     cursor: pointer;
-    transition: 
+    transition:
         transform 0.2s ease,
         box-shadow 0.2s ease,
         border-color 0.2s ease,
@@ -692,7 +687,7 @@ body {
 
 .client-box:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 6px 18px var(--shadow-color);
     border-color: rgba(29, 98, 236, 0.2);
 }
 
@@ -937,7 +932,7 @@ body {
     color: white;
     font-size: 20px;
     cursor: pointer;
-    transition: 
+    transition:
         background-color 0.3s ease,
         transform 0.2s ease,
         box-shadow 0.3s ease;
@@ -1499,7 +1494,7 @@ body {
     /* Ombra */
     box-shadow: 0 2px 8px rgba(29, 98, 236, 0.3);
     /* Transizioni */
-    transition: 
+    transition:
         background 0.3s ease,
         transform 0.2s ease;
 }
@@ -1584,28 +1579,28 @@ body {
     .main-content {
         padding: 32px;
     }
-    
+
     .page-title {
         font-size: 40px;
     }
-    
+
     .contacts-grid {
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     }
-    
+
     .clients-grid {
         grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     }
-    
+
     /* Form transazione mantiene layout inline su tablet */
     .transaction-form-inline {
         flex-wrap: wrap;
     }
-    
+
     .date-input-text {
         width: 140px;
     }
-    
+
     .amount-input-wrapper.compact {
         width: 160px;
     }
@@ -1619,16 +1614,16 @@ body {
         padding: 15px;
         padding-top: 60px; /* Spazio per pulsante menu */
     }
-    
+
     /* Ridimensiona titoli */
     .page-title {
         font-size: 32px;
     }
-    
+
     .page-subtitle {
         font-size: 16px;
     }
-    
+
     /* Toolbar responsive */
     .floating-toolbar {
         flex-direction: column;
@@ -1636,13 +1631,13 @@ body {
         padding: 16px;
         align-items: stretch;
     }
-    
+
     /* Search container full width su mobile */
     .search-container {
         max-width: 100%;
         width: 100%;
     }
-    
+
     /* Pulsanti toolbar responsive */
     .toolbar-buttons {
         flex-wrap: wrap;
@@ -1650,33 +1645,33 @@ body {
         gap: 8px;
         width: 100%;
     }
-    
+
     .toolbar-btn {
         padding: 10px 14px;
         font-size: 13px;
         flex: 1 1 calc(50% - 4px);
         min-width: 120px;
     }
-    
+
     /* Griglia contatti single column su mobile */
     .contacts-grid {
         grid-template-columns: 1fr;
         gap: 16px;
     }
-    
+
     /* Griglia clienti single column su mobile */
     .clients-grid {
         grid-template-columns: 1fr;
         gap: 16px;
     }
-    
+
     /* Ottimizza spazi modal su mobile */
     .modal-content {
         width: 95%;
         padding: 24px;
         margin: 20px;
     }
-    
+
     /* Modal large e xlarge su mobile */
     .modal-content-large,
     .modal-content-medium,
@@ -1684,60 +1679,60 @@ body {
         width: 95%;
         max-width: none;
     }
-    
+
     /* Form transazione inline responsive */
     .transaction-form-inline {
         flex-direction: column;
         gap: 16px;
     }
-    
+
     .form-group-inline {
         width: 100%;
     }
-    
+
     .form-group-inline.flex-grow {
         flex: none;
     }
-    
+
     .date-input-text {
         width: 100%;
     }
-    
+
     .amount-input-wrapper.compact {
         width: 100%;
     }
-    
+
     .btn-confirm-transaction {
         width: 100%;
         height: 44px;
     }
-    
+
     /* Tabella storico responsive */
     .history-table {
         font-size: 13px;
     }
-    
+
     .history-table th,
     .history-table td {
         padding: 8px;
     }
-    
+
     /* Azioni transazione responsive */
     .transaction-actions,
     .transaction-actions-compact {
         flex-direction: column;
     }
-    
+
     .transaction-actions .toolbar-btn,
     .transaction-actions-compact .toolbar-btn {
         width: 100%;
     }
-    
+
     /* Ridimensiona card contatto */
     .contact-box {
         padding: 20px;
     }
-    
+
     .contact-icon-container {
         width: 48px;
         height: 48px;
@@ -1750,12 +1745,12 @@ body {
     .page-title {
         font-size: 28px;
     }
-    
+
     /* Pulsanti toolbar full width */
     .toolbar-btn {
         flex: 1 1 100%;
     }
-    
+
     /* Ottimizza padding */
     .content-section {
         padding: 20px;
@@ -1806,19 +1801,19 @@ body {
     .custom-alert {
         display: none !important;
     }
-    
+
     /* Adatta layout per stampa */
     .main-content {
         margin-left: 0;
         padding: 0;
     }
-    
+
     /* Ottimizza colori per stampa */
     body {
         background: white;
         color: black;
     }
-    
+
     .content-section {
         border: 1px solid #ccc;
         box-shadow: none;

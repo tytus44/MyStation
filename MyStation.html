@@ -6,13 +6,13 @@
     <title>MyStation</title>
     <link rel="icon" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="stile.css">
-    <link rel="stylesheet" href="sidebar.css">
-    <script defer src="memoria.js"></script>
-    <script defer src="sidebar.js"></script>
-    <script defer src="anagrafica.js"></script>
-    <script defer src="amministrazione.js"></script>
-    <script defer src="registro.js"></script>
+    <link rel="stylesheet" href="stile.css?v=1.2">
+    <link rel="stylesheet" href="sidebar.css?v=1.2">
+    <script defer src="memoria.js?v=1.2"></script>
+    <script defer src="sidebar.js?v=1.2"></script>
+    <script defer src="anagrafica.js?v=1.2"></script>
+    <script defer src="amministrazione.js?v=1.2"></script>
+    <script defer src="registro.js?v=1.2"></script>
 </head>
 <body>
     <div class="app">
@@ -188,7 +188,7 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- Barra filtri -->
                 <div class="filter-bar">
                     <div class="filter-label">Filtra ricerca per:</div>
@@ -210,12 +210,12 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- Riepilogo -->
                 <div class="registro-summary" id="registro-summary">
                     <!-- Generato dinamicamente -->
                 </div>
-                
+
                 <!-- Griglia registro -->
                 <div class="content-section">
                     <div class="registro-grid" id="registro-grid"></div>
@@ -254,7 +254,7 @@
     <!-- ============================================
          MODALI ANAGRAFICA
          ============================================ -->
-    
+
     <!-- Modale nuovo contatto -->
     <div id="new-contact-modal" class="modal">
         <div class="modal-content">
@@ -280,7 +280,7 @@
     <!-- ============================================
          MODALI AMMINISTRAZIONE
          ============================================ -->
-    
+
     <!-- Modale nuovo cliente -->
     <div id="new-client-modal" class="modal">
         <div class="modal-content">
@@ -310,7 +310,7 @@
                 </h2>
                 <span class="close-btn" id="close-transaction-modal-btn">&times;</span>
             </div>
-            
+
             <!-- Saldo attuale -->
             <div class="client-balance-display">
                 <span class="balance-label">Saldo attuale:</span>
@@ -322,34 +322,34 @@
                 <div class="transaction-form-inline">
                     <!-- Input data (testo semplice) -->
                     <div class="form-group-inline">
-                        <input type="text" 
-                               id="transaction-date" 
+                        <input type="text"
+                               id="transaction-date"
                                placeholder="GG/MM/AAAA"
                                pattern="\d{2}/\d{2}/\d{4}"
                                maxlength="10"
                                class="date-input-text">
                     </div>
-                    
+
                     <!-- Input descrizione -->
                     <div class="form-group-inline flex-grow">
-                        <input type="text" 
-                               id="transaction-description" 
+                        <input type="text"
+                               id="transaction-description"
                                placeholder="Descrizione (default: Carburante)"
                                class="description-input">
                     </div>
-                    
+
                     <!-- Input importo con simbolo euro -->
                     <div class="form-group-inline">
                         <div class="amount-input-wrapper compact">
                             <span class="currency-symbol">€</span>
-                            <input type="text" 
-                                   id="transaction-amount" 
-                                   placeholder="0,00" 
+                            <input type="text"
+                                   id="transaction-amount"
+                                   placeholder="0,00"
                                    pattern="[0-9,]*"
                                    class="amount-input-compact">
                         </div>
                     </div>
-                    
+
                     <!-- Pulsante conferma (solo icona) -->
                     <button class="btn-confirm-transaction" id="confirm-transaction-btn" title="Aggiungi transazione">
                         <i class="fas fa-plus-circle"></i>
@@ -408,11 +408,11 @@
             </div>
         </div>
     </div>
-    
+
     <!-- ============================================
          MODALE REGISTRO DI CARICO
          ============================================ -->
-    
+
     <!-- Modale nuovo carico -->
     <div id="new-load-modal" class="modal">
         <div class="modal-content">
